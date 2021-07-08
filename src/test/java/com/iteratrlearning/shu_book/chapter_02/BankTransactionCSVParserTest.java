@@ -41,4 +41,19 @@ public class BankTransactionCSVParserTest {
         assertEquals(expected.getDescription(), result.getDescription());
     }
 
+    @Test
+    public void shouldHandleInvalidData() {
+        // Given
+        String invalidDataLine = "1-01-2000,-10.5,Fuel"; // Date format is: day-month-year
+
+        // When
+        BankTransaction result = statementParser.parseFrom(invalidDataLine);
+
+        // Then
+        BankTransaction expected = new BankTransaction(
+                LocalDate.of(2000, Month.JANUARY, 1), -10.5, "Fuel");
+        assertEquals(expected.getDate(), result.getDate());
+        assertEquals(expected.getAmount(), result.getAmount(), 0.0d);
+        assertEquals(expected.getDescription(), result.getDescription());
+    }
 }
