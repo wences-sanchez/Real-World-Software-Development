@@ -13,33 +13,46 @@ public class BankStatementProcessorTest {
 
     private BankStatementProcessor bankStatementProcessor;
 
+    private LocalDate startDate, endDate;
+
     @Before
     public void setUp() {
+        // Given
         List<BankTransaction> bankTransactions = List.of(
                 new BankTransaction(LocalDate.of(2019, Month.DECEMBER, 31), -20_000, "Invalid"),
                 new BankTransaction(LocalDate.of(2020, Month.JANUARY, 1), 1_000.2215, "First year's day"),
-                new BankTransaction(LocalDate.of(2020, Month.JANUARY, 01), 1_000, "First year's zeroed day"),
+                new BankTransaction(LocalDate.of(2020, Month.JANUARY, 1), 1_000, "First year's zeroed day"),
                 new BankTransaction(LocalDate.of(2020, Month.FEBRUARY, 14), 500, "San Valentin"),
                 new BankTransaction(LocalDate.of(2020, Month.JULY, 23), 2_000, "Holidays"),
-                new BankTransaction(LocalDate.of(2020, Month.NOVEMBER, 05), 2_000.0001, "Holidays"),
+                new BankTransaction(LocalDate.of(2021, Month.JANUARY, 1), 0, "Zeroed"),
+                new BankTransaction(LocalDate.of(2020, Month.MARCH, 1), -0.0001, "Negative zero"),
+                new BankTransaction(LocalDate.of(2020, Month.NOVEMBER, 5), 2_000.0001, "Holidays"),
                 new BankTransaction(LocalDate.of(2020, Month.JUNE, 30), 2_000.0002, "Holidays"),
-                new BankTransaction(LocalDate.of(2021, Month.JANUARY, 01), -10_000, "Invalid"),
+                new BankTransaction(LocalDate.of(2021, Month.JANUARY, 1), -10_000, "Invalid"),
                 new BankTransaction(LocalDate.of(2021, Month.JANUARY, 1), 20_000, "Invalid")
         );
+
+        startDate = LocalDate.of(2020, Month.JANUARY, 1);
+        endDate = LocalDate.of(2020, Month.DECEMBER, 31);
+
         bankStatementProcessor = new BankStatementProcessor(bankTransactions);
     }
 
     @Test
     public void shouldFindMaxAmountInRange() {
-        // Given
-        LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 1);
-        LocalDate endDate = LocalDate.of(2020, Month.DECEMBER, 31);
-
         // When
-        double maxTransaction = bankStatementProcessor.findMaximumMovementInRange(startDate, endDate);
+        double maxTransaction = bankStatementProcessor.findMaxMovementInRange(startDate, endDate);
 
         // Then
-        Assert.assertEquals(2_000.0002, maxTransaction, 0.0);
+        Assert.assertEquals(2_000.0002, maxTransaction, 0.0d);
+    }
+
+    @Test
+    public void shouldFindMinAmountInRange() {
+        // When
+        double minTransaction = bankStatementProcessor.findMinMovementInRange(startDate, endDate);
+        // Then
+        Assert.assertEquals(-0.0001, minTransaction, 0.0d);
     }
 
 }
