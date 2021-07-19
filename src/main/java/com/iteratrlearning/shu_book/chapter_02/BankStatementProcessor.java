@@ -45,7 +45,7 @@ public class BankStatementProcessor {
      *
      * @return the maximum transaction amount between the range specified
      */
-    public double findMaximumMovementInRange(final LocalDate startDate, final LocalDate endDate) {
+    public double findMaxMovementInRange(final LocalDate startDate, final LocalDate endDate) {
         double max = 0;
         for (BankTransaction transaction : bankTransactions) {
             if (transaction.getDate().isAfter(startDate) && transaction.getDate().isBefore(endDate)
@@ -54,5 +54,16 @@ public class BankStatementProcessor {
             }
         }
         return max;
+    }
+
+    public double findMinMovementInRange(final LocalDate startDate, final LocalDate endDate) {
+        double min = Double.MAX_VALUE;
+        for (BankTransaction transaction : bankTransactions) {
+            if (transaction.getDate().isAfter(startDate) && transaction.getDate().isBefore(endDate)
+                    && transaction.getAmount() < min) {
+                min = transaction.getAmount();
+            }
+        }
+        return min;
     }
 }
