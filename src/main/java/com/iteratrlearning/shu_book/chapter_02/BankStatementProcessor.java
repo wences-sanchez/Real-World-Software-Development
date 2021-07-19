@@ -1,5 +1,6 @@
 package com.iteratrlearning.shu_book.chapter_02;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
@@ -37,5 +38,21 @@ public class BankStatementProcessor {
             }
         }
         return total;
+    }
+
+    /**
+     * Find the maximum transaction amount in specific date ranges
+     *
+     * @return the maximum transaction amount between the range specified
+     */
+    public double findMaximumMovementInRange(final LocalDate startDate, final LocalDate endDate) {
+        double max = 0;
+        for (BankTransaction transaction : bankTransactions) {
+            if (transaction.getDate().isAfter(startDate) && transaction.getDate().isBefore(endDate)
+                    && transaction.getAmount() >= max) {
+                max = transaction.getAmount();
+            }
+        }
+        return max;
     }
 }
